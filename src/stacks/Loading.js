@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, StatusBar } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, StatusBar, BackHandler } from 'react-native';
 import { connect } from 'react-redux';
 import { API } from '../redux/actions/api';
 
@@ -21,6 +21,15 @@ class Loading extends React.Component {
         await this.getCountry()
         await this.mergeData()
         await this.props.navigation.navigate('Statistic', { arrayData: this.state.arrayData })
+        BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
+    }
+
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
+    }
+
+    onBackPress = () => {
+        return true;
     }
 
     async timeout(ms) {
@@ -63,7 +72,7 @@ class Loading extends React.Component {
         return (
             <View style={styles.container}>
                 <StatusBar backgroundColor="#333333" />
-                <Text style={styles.text}>OPEN THE APP...</Text>
+                <Text style={styles.text}>PLEASE WAIT...</Text>
                 <ActivityIndicator size="large" color="white" />
             </View>
         );
